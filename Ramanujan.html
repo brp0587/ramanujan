@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Genius of Ramanujan: An Interactive Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #FDFBF6;
+            color: #3C3633;
+        }
+        .font-sans {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        .nav-btn.active {
+            background-color: #A0937D;
+            color: #FDFBF6;
+            transform: scale(1.05);
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-left: 5px solid #A0937D;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .interactive-container {
+            background-color: #F0EBE3;
+            border: 1px solid #E4DCCF;
+        }
+        .btn-primary {
+            background-color: #776B5D;
+            color: #FDFBF6;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #A0937D;
+        }
+        .partition-result {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1, h2, h3 {
+            font-family: 'Garamond', serif;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-[#776B5D]" data-lang-key="title_header">The Genius of Ramanujan</h1>
+            </div>
+            <div class="flex items-center space-x-2 bg-[#F0EBE3] p-1 rounded-full">
+                <button id="lang-en" class="nav-btn px-4 py-2 text-sm font-semibold rounded-full active">English</button>
+                <button id="lang-gu" class="nav-btn px-4 py-2 text-sm font-semibold rounded-full">ગુજરાતી</button>
+                <button id="lang-hi" class="nav-btn px-4 py-2 text-sm font-semibold rounded-full">हिन्दी</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section id="hero" class="text-center mb-20">
+            <h2 class="text-5xl font-bold mb-4" data-lang-key="hero_title">Srinivasa Ramanujan</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-lang-key="hero_subtitle">An interactive journey through the mind of a self-taught mathematical prodigy who reshaped number theory and saw infinity in the palm of his hand.</p>
+        </section>
+
+        <div class="space-y-16">
+
+            <div class="card p-8 rounded-lg shadow-md">
+                <h3 class="text-3xl font-bold mb-4" data-lang-key="partition_title">The Partition Function: Unpacking Integers</h3>
+                <p class="mb-6 text-gray-700" data-lang-key="partition_desc">Ramanujan explored p(n), the partition function, which counts the number of ways an integer 'n' can be written as a sum of positive integers. For example, p(4) = 5. He discovered stunning, hidden patterns within these numbers, known as congruences. This interactive tool lets you explore the partitions for small numbers yourself.</p>
+                <div class="interactive-container p-6 rounded-lg">
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <label for="partition-input" class="font-semibold" data-lang-key="partition_label">Enter an integer (1-7):</label>
+                        <input type="number" id="partition-input" min="1" max="7" value="4" class="w-24 text-center p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#A0937D] focus:border-[#A0937D]">
+                        <button onclick="calculatePartitions()" class="btn-primary px-6 py-2 rounded-md font-semibold" data-lang-key="partition_button">Calculate</button>
+                    </div>
+                    <div id="partition-output" class="mt-6">
+                        <p class="font-bold text-lg" data-lang-key="partition_results_for" data-value="4">Results for p(4):</p>
+                        <p class="text-lg"><strong data-lang-key="partition_count">Total Partitions:</strong> <span id="partition-count" class="font-bold text-[#776B5D]">5</span></p>
+                        <div id="partition-list" class="mt-2 text-gray-800 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-8 rounded-lg shadow-md">
+                <h3 class="text-3xl font-bold mb-4" data-lang-key="pi_title">An Infinite Series for Pi ($\pi$)</h3>
+                <p class="mb-6 text-gray-700" data-lang-key="pi_desc">Ramanujan created some of the most beautiful and rapidly converging series for calculating $\pi$. His formulas were so powerful they are still used in modern computer algorithms. This tool demonstrates how quickly his 1914 formula approximates $\pi$ as you add more terms to the sum.</p>
+                <div class="interactive-container p-6 rounded-lg">
+                    <div class="mb-4">
+                        <label for="pi-slider" class="font-semibold" data-lang-key="pi_label">Number of terms (k):</label>
+                        <span id="pi-terms-display" class="font-bold text-[#776B5D] ml-2">0</span>
+                        <input type="range" id="pi-slider" min="0" max="5" value="0" class="w-full mt-2" oninput="calculatePi()">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600" data-lang-key="pi_formula_title">Ramanujan's Formula approximates 1/$\pi$:</p>
+                        <p class="font-mono text-lg my-2 text-gray-800">
+                            <span id="pi-approximation" class="font-bold text-[#776B5D]">0.318309886...</span>
+                        </p>
+                        <p class="text-lg"><strong data-lang-key="pi_calculated">Calculated $\pi$ $\approx$</strong> <span id="pi-result" class="font-bold text-[#776B5D]">...</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-8 rounded-lg shadow-md">
+                <h3 class="text-3xl font-bold mb-4" data-lang-key="taxicab_title">The Taxicab Number: 1729</h3>
+                <p class="mb-6 text-gray-700" data-lang-key="taxicab_desc">The famous story goes that G.H. Hardy remarked his taxi's number, 1729, was dull. Ramanujan instantly replied it was very interesting: it is the smallest number expressible as the sum of two cubes in two different ways. This simple anecdote reveals his profound, intuitive connection to the world of numbers.</p>
+                <div class="interactive-container p-6 rounded-lg flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="text-6xl font-bold text-[#776B5D] mb-6">1729</div>
+                        <div class="flex flex-col md:flex-row gap-8 text-2xl">
+                            <div class="p-4 bg-white rounded-md shadow-sm">
+                                12³ + 1³
+                                <span class="block text-lg text-gray-600">1728 + 1</span>
+                            </div>
+                            <div class="p-4 bg-white rounded-md shadow-sm">
+                                10³ + 9³
+                                <span class="block text-lg text-gray-600">1000 + 729</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-8 rounded-lg shadow-md">
+                <h3 class="text-3xl font-bold mb-4" data-lang-key="legacy_title">A Lasting Legacy</h3>
+                <p class="text-gray-700 space-y-4">
+                    <span data-lang-key="legacy_p1">Srinivasa Ramanujan's life was short, but his mathematical legacy is vast and enduring. He bridged the gap between intuition and rigorous proof, leaving behind notebooks filled with thousands of results that mathematicians continue to study today.</span>
+                    <span class="block" data-lang-key="legacy_p2">His work on mock theta functions, for example, was a mystery for decades but has now found applications in modern physics, including the study of black holes. His contributions have not only advanced pure mathematics but have also laid the groundwork for applications in computer science and other fields, proving his genius was truly ahead of his time.</span>
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-8 mt-12 border-t border-gray-200">
+        <p class="text-gray-500" data-lang-key="footer_text">An interactive exploration of the work of Srinivasa Ramanujan.</p>
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                title_header: "The Genius of Ramanujan",
+                hero_title: "Srinivasa Ramanujan",
+                hero_subtitle: "An interactive journey through the mind of a self-taught mathematical prodigy who reshaped number theory and saw infinity in the palm of his hand.",
+                partition_title: "The Partition Function: Unpacking Integers",
+                partition_desc: "Ramanujan explored p(n), the partition function, which counts the number of ways an integer 'n' can be written as a sum of positive integers. For example, p(4) = 5. He discovered stunning, hidden patterns within these numbers, known as congruences. This interactive tool lets you explore the partitions for small numbers yourself.",
+                partition_label: "Enter an integer (1-7):",
+                partition_button: "Calculate",
+                partition_results_for: "Results for p({value}):",
+                partition_count: "Total Partitions:",
+                pi_title: "An Infinite Series for Pi (\\(\\pi\\))",
+                pi_desc: "Ramanujan created some of the most beautiful and rapidly converging series for calculating \\(\\pi\\). His formulas were so powerful they are still used in modern computer algorithms. This tool demonstrates how quickly his 1914 formula approximates \\(\\pi\\) as you add more terms to the sum.",
+                pi_label: "Number of terms (k):",
+                pi_formula_title: "Ramanujan's Formula approximates 1/\\(\\pi\\):",
+                pi_calculated: "Calculated \\(\\pi\\) \\(\\approx\\)",
+                taxicab_title: "The Taxicab Number: 1729",
+                taxicab_desc: "The famous story goes that G.H. Hardy remarked his taxi's number, 1729, was dull. Ramanujan instantly replied it was very interesting: it is the smallest number expressible as the sum of two cubes in two different ways. This simple anecdote reveals his profound, intuitive connection to the world of numbers.",
+                legacy_title: "A Lasting Legacy",
+                legacy_p1: "Srinivasa Ramanujan's life was short, but his mathematical legacy is vast and enduring. He bridged the gap between intuition and rigorous proof, leaving behind notebooks filled with thousands of results that mathematicians continue to study today.",
+                legacy_p2: "His work on mock theta functions, for example, was a mystery for decades but has now found applications in modern physics, including the study of black holes. His contributions have not only advanced pure mathematics but have also laid the groundwork for applications in computer science and other fields, proving his genius was truly ahead of his time.",
+                footer_text: "An interactive exploration of the work of Srinivasa Ramanujan."
+            },
+            gu: {
+                title_header: "રામાનુજનની પ્રતિભા",
+                hero_title: "શ્રીનિવાસ રામાનુજન",
+                hero_subtitle: "એક સ્વ-શિક્ષિત ગાણિતિક પ્રતિભાના મનની એક ઇન્ટરેક્ટિવ યાત્રા, જેમણે સંખ્યા સિદ્ધાંતને નવો આકાર આપ્યો અને અનંતને પોતાની હથેળીમાં જોયું.",
+                partition_title: "પાર્ટીશન ફંક્શન: પૂર્ણાંકોને સમજવું",
+                partition_desc: "રામાનુજને p(n), પાર્ટીશન ફંક્શન, નો અભ્યાસ કર્યો, જે પૂર્ણાંક 'n' ને ધન પૂર્ણાંકોના સરવાળા તરીકે લખવાની રીતોની સંખ્યા ગણે છે. ઉદાહરણ તરીકે, p(4) = 5. તેમણે આ સંખ્યાઓમાં અદભૂત, છુપાયેલી પેટર્ન શોધી કાઢી, જેને સંગતતા (congruences) કહેવાય છે. આ ઇન્ટરેક્ટિવ સાધન તમને નાની સંખ્યાઓ માટે પાર્ટીશનો જાતે શોધવા દે છે.",
+                partition_label: "એક પૂર્ણાંક દાખલ કરો (૧-૭):",
+                partition_button: "ગણતરી કરો",
+                partition_results_for: "p({value}) માટે પરિણામો:",
+                partition_count: "કુલ પાર્ટીશનો:",
+                pi_title: "પાઇ (\\(\\pi\\)) માટે અનંત શ્રેણી",
+                pi_desc: "રામાનુજને \\(\\pi\\) ની ગણતરી માટે કેટલીક સૌથી સુંદર અને ઝડપથી કન્વર્જ થતી શ્રેણીઓ બનાવી. તેમના સૂત્રો એટલા શક્તિશાળી હતા કે તે આધુનિક કમ્પ્યુટર એલ્ગોરિધમ્સમાં આજે પણ વપરાય છે. આ સાધન બતાવે છે કે તેમનું ૧૯૧૪ નું સૂત્ર જેમ જેમ તમે સરવાળામાં વધુ પદો ઉમેરો છો તેમ તેમ કેટલી ઝડપથી \\(\\pi\\) ની નજીક પહોંચે છે.",
+                pi_label: "પદોની સંખ્યા (k):",
+                pi_formula_title: "રામાનુજનનું સૂત્ર ૧/\\(\\pi\\) ની ગણતરી કરે છે:",
+                pi_calculated: "ગણતરી કરેલ \\(\\pi\\) \\(\\approx\\)",
+                taxicab_title: "ટેક્સીકેબ નંબર: ૧૭૨૯",
+                taxicab_desc: "પ્રખ્યાત વાર્તા મુજબ, જી.એચ. હાર્ડીએ ટિપ્પણી કરી કે તેમની ટેક્સીનો નંબર, ૧૭૨૯, નિરસ હતો. રામાનુજને તરત જ જવાબ આપ્યો કે તે ખૂબ જ રસપ્રદ છે: તે સૌથી નાની સંખ્યા છે જેને બે ઘનના સરવાળા તરીકે બે અલગ અલગ રીતે વ્યક્ત કરી શકાય છે. આ સરળ ટુચકો સંખ્યાઓની દુનિયા સાથેના તેમના ઊંડા, સાહજિક જોડાણને છતી કરે છે.",
+                legacy_title: "એક સ્થાયી વારસો",
+                legacy_p1: "શ્રીનિવાસ રામાનુજનનું જીવન ટૂંકું હતું, પરંતુ તેમનો ગાણિતિક વારસો વિશાળ અને સ્થાયી છે. તેમણે અંતર્જ્ઞાન અને કઠોર પુરાવા વચ્ચેનું અંતર પૂર્યું, અને હજારો પરિણામોથી ભરેલી નોટબુક પાછળ છોડી ગયા જેનો ગણિતશાસ્ત્રીઓ આજે પણ અભ્યાસ કરે છે.",
+                legacy_p2: "ઉદાહરણ તરીકે, મોક થીટા ફંક્શન્સ પરનું તેમનું કાર્ય દાયકાઓ સુધી એક રહસ્ય હતું પરંતુ હવે આધુનિક ભૌતિકશાસ્ત્રમાં, બ્લેક હોલના અભ્યાસ સહિત, તેના ઉપયોગો મળ્યા છે. તેમના યોગદાનથી માત્ર શુદ્ધ ગણિતને જ આગળ વધાર્યું નથી, પરંતુ કમ્પ્યુટર વિજ્ઞાન અને અન્ય ક્ષેત્રોમાં એપ્લિકેશન માટે પણ પાયો નાખ્યો છે, જે સાબિત કરે છે કે તેમની પ્રતિભા ખરેખર તેમના સમય કરતાં આગળ હતી.",
+                footer_text: "શ્રીનિવાસ રામાનુજનના કાર્યની એક ઇન્ટરેક્ટિવ શોધ."
+            },
+            hi: {
+                title_header: "रामानुजन की प्रतिभा",
+                hero_title: "श्रीनिवास रामानुजन",
+                hero_subtitle: "एक स्व-शिक्षित गणितीय कौतुक के मन के माध्यम से एक इंटरैक्टिव यात्रा, जिन्होंने संख्या सिद्धांत को नया रूप दिया और अपनी हथेली में अनंत को देखा।",
+                partition_title: "विभाजन फलन: पूर्णांकों को खोलना",
+                partition_desc: "रामानुजन ने p(n), विभाजन फलन का पता लगाया, जो एक पूर्णांक 'n' को धनात्मक पूर्णांकों के योग के रूप में लिखे जाने के तरीकों की संख्या को गिनता है। उदाहरण के लिए, p(4) = 5। उन्होंने इन संख्याओं के भीतर आश्चर्यजनक, छिपे हुए पैटर्न की खोज की, जिन्हें सर्वांगसमता (congruences) के रूप में जाना जाता है। यह इंटरैक्टिव टूल आपको छोटी संख्याओं के लिए स्वयं विभाजन का पता लगाने देता है।",
+                partition_label: "एक पूर्णांक दर्ज करें (१-७):",
+                partition_button: "गणना करें",
+                partition_results_for: "p({value}) के लिए परिणाम:",
+                partition_count: "कुल विभाजन:",
+                pi_title: "पाई (\\(\\pi\\)) के लिए एक अनंत श्रृंखला",
+                pi_desc: "रामानुजन ने \\(\\pi\\) की गणना के लिए कुछ सबसे सुंदर और तेजी से अभिसरण करने वाली श्रृंखलाएं बनाईं। उनके सूत्र इतने शक्तिशाली थे कि वे आज भी आधुनिक कंप्यूटर एल्गोरिदम में उपयोग किए जाते हैं। यह उपकरण दर्शाता है कि उनका 1914 का सूत्र कितनी जल्दी \\(\\pi\\) का अनुमान लगाता है जैसे ही आप योग में और पद जोड़ते हैं।",
+                pi_label: "पदों की संख्या (k):",
+                pi_formula_title: "रामानुजन का सूत्र १/\\(\\pi\\) का अनुमान लगाता है:",
+                pi_calculated: "गणना की गई \\(\\pi\\) \\(\\approx\\)",
+                taxicab_title: "टैक्सीकैब संख्या: १७२९",
+                taxicab_desc: "प्रसिद्ध कहानी है कि जी.एच. हार्डी ने टिप्पणी की कि उनकी टैक्सी का नंबर, १७२९, नीरस था। रामानुजन ने तुरंत उत्तर दिया कि वह बहुत दिलचस्प था: यह सबसे छोटी संख्या है जिसे दो घनों के योग के रूप में दो अलग-अलग तरीकों से व्यक्त किया जा सकता है। यह सरल किस्सा संख्याओं की दुनिया के साथ उनके गहरे, सहज संबंध को प्रकट करता है।",
+                legacy_title: "एक स्थायी विरासत",
+                legacy_p1: "श्रीनिवास रामानुजन का जीवन छोटा था, लेकिन उनकी गणितीय विरासत विशाल और स्थायी है। उन्होंने अंतर्ज्ञान और कठोर प्रमाण के बीच की खाई को पाट दिया, और हजारों परिणामों से भरी नोटबुक छोड़ गए जिनका गणितज्ञ आज भी अध्ययन करना जारी रखते हैं।",
+                legacy_p2: "उदाहरण के लिए, मॉक थीटा फ़ंक्शंस पर उनका काम दशकों तक एक रहस्य था, लेकिन अब आधुनिक भौतिकी में इसके अनुप्रयोग मिल गए हैं, जिसमें ब्लैक होल का अध्ययन भी शामिल है। उनके योगदान ने न केवल शुद्ध गणित को आगे बढ़ाया है, बल्कि कंप्यूटर विज्ञान और अन्य क्षेत्रों में अनुप्रयोगों के लिए भी आधार तैयार किया है, यह साबित करते हुए कि उनकी प्रतिभा वास्तव में अपने समय से आगे थी।",
+                footer_text: "श्रीनिवास रामानुजन के काम की एक इंटरैक्टिव खोज।"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                let translation = translations[lang][key] || translations['en'][key];
+                
+                if (el.dataset.value) {
+                    translation = translation.replace('{value}', el.dataset.value);
+                }
+
+                el.innerHTML = translation;
+            });
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`lang-${lang}`).classList.add('active');
+            
+            // Re-render math after changing language
+            if (window.MathJax) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        function getPartitions(n) {
+            n = parseInt(n);
+            if (isNaN(n) || n <= 0) return [];
+            const result = [];
+            
+            function findPartitions(target, max, current) {
+                if (target === 0) {
+                    result.push(current.slice());
+                    return;
+                }
+                if (target < 0) {
+                    return;
+                }
+                for (let i = Math.min(max, target); i >= 1; i--) {
+                    current.push(i);
+                    findPartitions(target - i, i, current);
+                    current.pop();
+                }
+            }
+            findPartitions(n, n, []);
+            return result;
+        }
+
+        function calculatePartitions() {
+            const input = document.getElementById('partition-input');
+            const n = parseInt(input.value);
+            if (n < 1 || n > 7) {
+                // Using a custom message box instead of alert()
+                const messageBox = document.createElement('div');
+                messageBox.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center';
+                messageBox.innerHTML = `
+                    <div class="p-8 border w-96 shadow-lg rounded-md bg-white text-center">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">Invalid Input</h3>
+                        <div class="mt-2 px-7 py-3">
+                            <p class="text-sm text-gray-500">Please enter a number between 1 and 7.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-4 py-2 bg-[#776B5D] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#A0937D] focus:outline-none focus:ring-2 focus:ring-[#A0937D]">OK</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(messageBox);
+                return;
+            }
+
+            const partitions = getPartitions(n);
+            const countEl = document.getElementById('partition-count');
+            const listEl = document.getElementById('partition-list');
+            const resultsForEl = document.querySelector('[data-lang-key="partition_results_for"]');
+
+            countEl.textContent = partitions.length;
+            listEl.innerHTML = '';
+            partitions.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'partition-result p-2 bg-gray-100 rounded text-center';
+                div.textContent = p.join(' + ');
+                listEl.appendChild(div);
+            });
+            
+            resultsForEl.dataset.value = n;
+            changeLanguage(currentLang);
+        }
+
+        function calculatePi() {
+            const slider = document.getElementById('pi-slider');
+            const k = parseInt(slider.value);
+            document.getElementById('pi-terms-display').textContent = k;
+
+            // Using floating-point for calculation to avoid BigInt errors
+            let sum = 0;
+            const pre_constant = (2 * Math.sqrt(2)) / 9801;
+
+            for (let i = 0; i <= k; i++) {
+                const term = (
+                    (factorial(4 * i) * (1103 + 26390 * i)) / 
+                    (Math.pow(factorial(i), 4) * Math.pow(396, 4 * i))
+                );
+                sum += term;
+            }
+            
+            const oneOverPi = pre_constant * sum;
+            const piApproximation = 1 / oneOverPi;
+
+            document.getElementById('pi-approximation').textContent = oneOverPi.toFixed(15);
+            document.getElementById('pi-result').textContent = piApproximation.toFixed(15);
+        }
+        
+        // A simple factorial function for the pi calculation
+        function factorial(n) {
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        window.onload = () => {
+            // Attach event listeners to the language buttons
+            // This is a more robust approach than using `onclick` in the HTML
+            document.getElementById('lang-en').addEventListener('click', () => changeLanguage('en'));
+            document.getElementById('lang-gu').addEventListener('click', () => changeLanguage('gu'));
+            document.getElementById('lang-hi').addEventListener('click', () => changeLanguage('hi'));
+
+            // Initial calculations and language setting
+            calculatePartitions();
+            calculatePi();
+            changeLanguage('en');
+        };
+    </script>
+</body>
+</html>
